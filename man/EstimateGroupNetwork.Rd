@@ -158,6 +158,7 @@ Giulio Costantini, Sacha Epskamp
 library("qgraph")
 library("mvtnorm")
 library("parallel")
+library("psych")
 ncores <- 1
 # uncomment for parallel processing
 # ncores <- detectCores() -1
@@ -234,6 +235,46 @@ correl
 # sort the methods in order of performance in recovering the original network
 # notice that this is not a complete simulation and is not indicative of performance in settings other than this one
 sort(rowMeans(correl))
+
+
+# In this example, the BFI network of males and females are compared
+library("EstimateGroupNetwork")
+library("psych")
+library("qgraph")
+
+# Load BFI data
+data(bfi)
+
+# remove observations with missing values
+bfi2 <- bfi[rowSums(is.na(bfi[,1:26])) == 0,]
+
+# Compute correlations:
+CorMales <- cor_auto(bfi2[bfi2$gender == 1,1:25])
+CorFemales <- cor_auto(bfi2[bfi2$gender == 2,1:25])
+
+# Estimate JGL:
+Res <- EstimateGroupNetwork(list(males = CorMales, females = CorFemales),
+                            n = c(sum(bfi2$gender == 1),sum(bfi2$gender == 2)))
+
+# Plot:
+Layout <- averageLayout(Res$males,Res$females)
+layout(t(1:2))
+qgraph(Res$males, layout = Layout, title = "Males (JGL)")
+qgraph(Res$females, layout = Layout, title = "Females (JGL)")
+
+# Compared to glasso:
+layout(t(1:2))
+qg_males <- qgraph(CorMales, graph = "glasso", sampleSize = sum(bfi$gender == 1), layout = Layout, title = "Males (glasso)")
+qg_females <- qgraph(CorFemales, graph = "glasso", sampleSize = sum(bfi$gender == 2), layout = Layout, title = "Females (glasso)")
+
+# In the following tables, TRUE indicate identical edges, and FALSE different edges for males and females
+# most of the edges that are different according to glasso...
+equal_glasso <- getWmat(qg_males) == getWmat(qg_females)
+table(equal_glasso[lower.tri(equal_glasso)])
+
+# ... are identical according to Fused Graphical Lasso
+equal_fgl <- Res$males == Res$females
+table(equal_fgl[lower.tri(equal_fgl)])
 
 }
 }
