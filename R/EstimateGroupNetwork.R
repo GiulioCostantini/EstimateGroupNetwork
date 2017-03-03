@@ -293,10 +293,10 @@ EstimateGroupNetwork <- function(X,
       {
         cl <- makeCluster(ncores)
         clusterExport(cl, list("fun", "S", "n", "l2cand", "lambda1", "myJGLarglist", "criterion", "count.unique", "gamma", "dec"), envir = environment())
-        ICl2 <- parSapply(cl = cl, l2cand, fun, lambda2 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        ICl2 <- parSapply(cl = cl, l2cand, fun, lambda1 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
         stopCluster(cl)
       } else {
-        ICl2 <- sapply(l2cand, fun, lambda2 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        ICl2 <- sapply(l2cand, fun, lambda1 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
       }
 
       lambda2 <- l2cand[which.min(ICl2)]
@@ -312,7 +312,8 @@ EstimateGroupNetwork <- function(X,
         lambda2 <- ifelse(which.min(c(min(ICl2), opt$objective)) == 1,
                           lambda2,
                           opt$minimum)
-      }
+
+    }
     } else if(strategy == "simultaneous")
     {
       # Candidate l1 and l2 values
@@ -360,6 +361,9 @@ EstimateGroupNetwork <- function(X,
           lambda1 <- opt$par[1]
           lambda2 <- opt$par[2]
         }
+
+        if(lambda1 < 0) lambda1 <- 0
+        if(lambda2 < 0) lambda2 <- 0
       }
     }
   }
@@ -393,7 +397,8 @@ EstimateGroupNetwork <- function(X,
                                  "gamma for eBIC" = gamma)
     out$TuningParameters <- c("lambda1" = lambda1,
                               "lambda2" = lambda2)
-    out$miscellaneous <- c("method" = method,
+    out$miscellaneous <- c("sampleSizes" = n,
+                           "method" = method,
                            "strategy" = strategy,
                            "k for crossvalidation" = k,
                            "seed for crossvalidation" = ifelse(missing("seed"), "none", seed),
