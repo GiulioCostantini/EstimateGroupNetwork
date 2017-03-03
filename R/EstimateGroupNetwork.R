@@ -397,8 +397,8 @@ EstimateGroupNetwork <- function(X,
                                  "gamma for eBIC" = gamma)
     out$TuningParameters <- c("lambda1" = lambda1,
                               "lambda2" = lambda2)
-    out$miscellaneous <- c("sampleSizes" = n,
-                           "method" = method,
+    out$n <- n
+    out$miscellaneous <- c("method" = method,
                            "strategy" = strategy,
                            "k for crossvalidation" = k,
                            "seed for crossvalidation" = ifelse(missing("seed"), "none", seed),
