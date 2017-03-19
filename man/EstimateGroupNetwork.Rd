@@ -7,13 +7,16 @@ Estimate Joint Graphical Lasso model on data collected on observations from diff
 The Joint Graphical lasso fits gaussian graphical models on data with the same variables observed on different groups or classes of interest (e.g., patients vs. controls; Danaher et al., 2014). The Joint Graphical Lasso relies on two tuning parameters, lambda1 and lambda2: This function performs tuning parameters selection relying on an information criterion (AIC / BIC / extended BIC) or k-fold cross validation and then fits the Joint Graphical Lasso model.
 }
 \usage{
-EstimateGroupNetwork(X,inputType = c("dataframe", "list.of.dataframes", "list.of.covariance.matrices"),
+EstimateGroupNetwork(X,inputType = c("dataframe", "list.of.dataframes",
+"list.of.covariance.matrices"),
                      n, covfun = covNoBessel, groupID, labels,
-                     method = c("InformationCriterion", "crossvalidation"), strategy = c("sequential", "simultaneous"),
+                     method = c("InformationCriterion", "crossvalidation"),
+                     strategy = c("sequential", "simultaneous"),
                      nlambda1 = 100, lambda1.min.ratio = .01, logseql1 = TRUE,
                      nlambda2 = 100, lambda2.min.ratio = .01, logseql2 = TRUE,
                      k = 10, seed,
-                     criterion = c("ebic", "bic", "aic"), count.unique = FALSE, gamma = .5, dec = 5,
+                     criterion = c("ebic", "bic", "aic"), count.unique = FALSE,
+                     gamma = .5, dec = 5,
                      optimize = TRUE, optmethod = "CG",
                      penalty = c("fused", "group"), weights = c("equal", "sample.size"),
                      penalize.diagonal = FALSE, maxiter = 500, rho = 1, truncate = 1e-5,
@@ -43,7 +46,8 @@ The type of data in input. If missing, the function will attempt to guess the ty
 }
   \item{n}{Integer. Vector of sample sizes, one by group, in the same order in which the groups are included in the list of covariance matrices. This argument is relevant only if \code{inputType} is "list.of.covariance.matrices" and will be ignored otherwise (with a warning).
 }
-  \item{covfun}{The function used for computing the sample covariance matrix. The default, \code{covNoBessel}, computes the covariance matrix without Bessel's correction, for consistency with package \pkg{\link{JGL}}}
+  \item{covfun}{The function used for computing the sample covariance matrix. The default, \code{covNoBessel}, computes the covariance matrix without Bessel's correction, for consistency with package \pkg{JGL}.
+  }
 
   \item{groupID}{a string. The name or number of the variable in the dataframe indicating a variable that identifies different groups. This argument is relevant only if \code{inputType} is "dataframe" and will be ignored otherwise.
 }
@@ -95,7 +99,7 @@ Information criteria such as AIC, BIC and extended BIC include the number of mod
   \item{optimize}{Logical. If \code{TRUE}, after identifying the best tuning parameters (i.e., associated with the lowest value of an Information Criterion) among the candidate values, use an optimizer to try to further reduce the value of the information criterion. Since this is not a convex optimization problem, there is no guarantee that this step will lead to better results. However, it cannot do any harm either (if the optimization stage does not lead to improvements, the best value among the candidates will be returned). Be advised that setting this argument to \code{TRUE} results in longer computational time.
 }
   \item{optmethod}{
-If argument \code{Strategy} is set to \code{"simultaneous"} and argument \code{optimize = TRUE}, the optimization stage will consider simultaneous tuning parameters simultanously. Therefore, function \code{\pkg{stats}::\link{optim}} will be used for the optimization stage. Argument \code{optmethod} can be used to set the optimization method. See parameter \code{method} in function \code{optim}.
+If argument \code{Strategy} is set to \code{"simultaneous"} and argument \code{optimize = TRUE}, the optimization stage will consider simultaneous tuning parameters simultanously. Therefore, function \link{optim} will be used for the optimization stage. Argument \code{optmethod} can be used to set the optimization method. See parameter \code{method} in function \link{optim}.
 }
 
 
@@ -135,8 +139,7 @@ If \code{simplifyOutput = FALSE}, a list is returned that includes including
 \references{
 Akaike, H. (1974), "A new look at the statistical model identification", IEEE Transactions on Automatic Control, 19 (6): 716-723, doi:10.1109/TAC.1974.1100705
 
-Danaher, P (2013). JGL: Performs the Joint Graphical Lasso for sparse inverse covariance estimation on multiple classes. R package version 2.3.
-  \link{https://CRAN.R-project.org/package=JGL}
+Danaher, P (2013). JGL: Performs the Joint Graphical Lasso for sparse inverse covariance estimation on multiple classes. R package version 2.3. https://CRAN.R-project.org/package=JGL
 
 Danaher, P., Wang, P., and Witten, D. M. (2014). The joint graphical lasso for inverse covariance estimation across multiple classes. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 76(2), 373-397. http://doi.org/10.1111/rssb.12033
 
@@ -151,17 +154,41 @@ Schwarz, G. (1978). "Estimating the dimension of a model." The annals of statist
 Giulio Costantini, Sacha Epskamp
 }
 \seealso{
-\code{\link{JGL}}, \code{\link{qgraph}}, \code{\link{parcor}}, \code{\link{InformationCriterion}}, \code{\link{covNoBessel}}
+\pkg{JGL}, \pkg{qgraph}, \pkg{parcor}, \link{covNoBessel}
 }
 \examples{
-\dontrun{
 library("qgraph")
 library("mvtnorm")
 library("parallel")
 library("psych")
+
 ncores <- 1
 # uncomment for parallel processing
 # ncores <- detectCores() -1
+
+# In this example, the BFI network of males and females are compared
+# Load BFI data
+data(bfi)
+
+# remove observations with missing values
+bfi2 <- bfi[rowSums(is.na(bfi[,1:26])) == 0,]
+
+# Compute correlations:
+CorMales <- cor_auto(bfi2[bfi2$gender == 1,1:25])
+CorFemales <- cor_auto(bfi2[bfi2$gender == 2,1:25])
+
+# Estimate JGL:
+Res <- EstimateGroupNetwork(list(males = CorMales, females = CorFemales),
+                            n = c(sum(bfi2$gender == 1),sum(bfi2$gender == 2)))
+
+# Plot:
+Layout <- averageLayout(Res$males,Res$females)
+layout(t(1:2))
+qgraph(Res$males, layout = Layout, title = "Males (JGL)")
+qgraph(Res$females, layout = Layout, title = "Females (JGL)")
+
+\dontrun{
+# Example with simluated data
 # generate three network structures, two are identical and one is different
 nets <- list()
 nets[[1]] <- matrix(c(0, .3, 0, .3,
@@ -187,7 +214,7 @@ lapply(nets, qgraph, edge.labels = TRUE)
 nobs <- 500
 nvar <- ncol(nets[[1]])
 set.seed(1)
-X <- lapply(nets, function(x) as.data.frame(rmvnorm(nobs, sigma=cov2cor(solve(diag(nvar)-x)))))
+X <- lapply(nets, function(x) as.data.frame(rmvnorm(nobs, sigma = cov2cor(solve(diag(nvar)-x)))))
 
 # use EstimateGroupNetwork for recovering the original structures
 recnets <- list()
@@ -199,23 +226,36 @@ recnets$glasso[[2]] <- EBICglasso(S = cor(X[[2]]), n = nobs)
 recnets$glasso[[3]] <- EBICglasso(S = cor(X[[3]]), n = nobs)
 
 # Using Akaike information criterion without count.unique option
-recnets$AIC1 <- EstimateGroupNetwork(X = X, method = "InformationCriterion", criterion = "aic", ncores = ncores)
+recnets$AIC1 <- EstimateGroupNetwork(X = X, method = "InformationCriterion",
+criterion = "aic", ncores = ncores)
 # Using Akaike information criterion with count.unique option
-recnets$AIC2 <- EstimateGroupNetwork(X = X, method = "InformationCriterion", criterion = "aic", ncores = ncores, count.unique = TRUE)
+recnets$AIC2 <- EstimateGroupNetwork(X = X, method = "InformationCriterion",
+criterion = "aic", ncores = ncores, count.unique = TRUE)
 # Using Bayes information criterion without count.unique option
-recnets$BIC1 <- EstimateGroupNetwork(X = X, method = "InformationCriterion", criterion = "bic", ncores = ncores)
+recnets$BIC1 <- EstimateGroupNetwork(X = X, method = "InformationCriterion",
+criterion = "bic", ncores = ncores)
 # Using Bayes information criterion with count.unique option
-recnets$BIC2 <- EstimateGroupNetwork(X = X, method = "InformationCriterion", criterion = "bic", ncores = ncores, count.unique = TRUE)
-# Using extended Bayes information criterion (gamma = .5 by default) without count.unique option
-recnets$eBIC1 <- EstimateGroupNetwork(X = X, method = "InformationCriterion", ncores = ncores, criterion = "ebic")
-# Using extended Bayes information criterion (gamma = .5 by default) with count.unique option
-recnets$eBIC2 <- EstimateGroupNetwork(X = X, method = "InformationCriterion", ncores = ncores, criterion = "ebic", count.unique = TRUE)
+recnets$BIC2 <- EstimateGroupNetwork(X = X, method = "InformationCriterion",
+criterion = "bic", ncores = ncores, count.unique = TRUE)
+# Using extended Bayes information criterion (gamma = .5 by default)
+# without count.unique option
+recnets$eBIC1 <- EstimateGroupNetwork(X = X, method = "InformationCriterion",
+ncores = ncores, criterion = "ebic")
+# Using extended Bayes information criterion (gamma = .5 by default) with
+# count.unique option
+recnets$eBIC2 <- EstimateGroupNetwork(X = X, method = "InformationCriterion",
+ncores = ncores, criterion = "ebic", count.unique = TRUE)
 # Use a more computationally intensive search strategy
-recnets$eBIC3 <- EstimateGroupNetwork(X = X, method = "InformationCriterion", ncores = ncores, criterion = "ebic", count.unique = TRUE, strategy = "simultaneous")
-# Add also the "optimization" stage, which may or may not improve the results (but cannot do any harm either)
-recnets$eBIC3 <- EstimateGroupNetwork(X = X, method = "InformationCriterion", ncores = ncores, criterion = "ebic", count.unique = TRUE, strategy = "simultaneous", optimize = TRUE)
+recnets$eBIC3 <- EstimateGroupNetwork(X = X, method = "InformationCriterion",
+ncores = ncores, criterion = "ebic", count.unique = TRUE, strategy = "simultaneous")
+# Add also the "optimization" stage, which may or may not improve the results
+# (but cannot do any harm either)
+recnets$eBIC3 <- EstimateGroupNetwork(X = X, method = "InformationCriterion",
+ncores = ncores, criterion = "ebic", count.unique = TRUE, strategy = "simultaneous",
+optimize = TRUE)
 # Using k-fold crossvalidation (k = 10 by default)
-recnets$cv <- EstimateGroupNetwork(X = X, method = "crossvalidation", ncores = ncores, seed = 1)
+recnets$cv <- EstimateGroupNetwork(X = X, method = "crossvalidation",
+ncores = ncores, seed = 1)
 
 # Compare each network with the data generating network using correlations
 correl <- data.frame(matrix(nrow = length(recnets), ncol = length(nets)))
@@ -233,48 +273,9 @@ for(i in seq_along(recnets))
 correl
 
 # sort the methods in order of performance in recovering the original network
-# notice that this is not a complete simulation and is not indicative of performance in settings other than this one
+# notice that this is not a complete simulation and is not indicative of performance
+# in settings other than this one
 sort(rowMeans(correl))
-
-
-# In this example, the BFI network of males and females are compared
-library("EstimateGroupNetwork")
-library("psych")
-library("qgraph")
-
-# Load BFI data
-data(bfi)
-
-# remove observations with missing values
-bfi2 <- bfi[rowSums(is.na(bfi[,1:26])) == 0,]
-
-# Compute correlations:
-CorMales <- cor_auto(bfi2[bfi2$gender == 1,1:25])
-CorFemales <- cor_auto(bfi2[bfi2$gender == 2,1:25])
-
-# Estimate JGL:
-Res <- EstimateGroupNetwork(list(males = CorMales, females = CorFemales),
-                            n = c(sum(bfi2$gender == 1),sum(bfi2$gender == 2)))
-
-# Plot:
-Layout <- averageLayout(Res$males,Res$females)
-layout(t(1:2))
-qgraph(Res$males, layout = Layout, title = "Males (JGL)")
-qgraph(Res$females, layout = Layout, title = "Females (JGL)")
-
-# Compared to glasso:
-layout(t(1:2))
-qg_males <- qgraph(CorMales, graph = "glasso", sampleSize = sum(bfi$gender == 1), layout = Layout, title = "Males (glasso)")
-qg_females <- qgraph(CorFemales, graph = "glasso", sampleSize = sum(bfi$gender == 2), layout = Layout, title = "Females (glasso)")
-
-# In the following tables, TRUE indicate identical edges, and FALSE different edges for males and females
-# most of the edges that are different according to glasso...
-equal_glasso <- getWmat(qg_males) == getWmat(qg_females)
-table(equal_glasso[lower.tri(equal_glasso)])
-
-# ... are identical according to Fused Graphical Lasso
-equal_fgl <- Res$males == Res$females
-table(equal_fgl[lower.tri(equal_fgl)])
 
 }
 }

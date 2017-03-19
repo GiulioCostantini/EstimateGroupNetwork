@@ -237,7 +237,7 @@ EstimateGroupNetwork <- function(X,
       l2cand <- l2cand[1,]
 
       # select the value of l1 with minimal value of an information criterion among the candidates, considering a minimal value of l2
-      fun <- function(lambda1, lambda2, S, n, myJGLarglist, criterion, count.unique, gamma, dec)
+      fun1 <- function(lambda1, lambda2, S, n, myJGLarglist, criterion, count.unique, gamma, dec)
       {
         theta <- myJGL(S = S, n = n, lambda1 = lambda1, lambda2 = lambda2,
                        penalty = myJGLarglist$penalty, weights = myJGLarglist$weights,
@@ -250,11 +250,11 @@ EstimateGroupNetwork <- function(X,
       if(ncores > 1)
       {
         cl <- makeCluster(ncores)
-        clusterExport(cl, list("fun", "S", "n", "l2cand", "myJGLarglist", "criterion", "count.unique", "gamma", "dec"), envir = environment())
-        ICl1 <- parSapply(cl = cl, l1cand, fun, lambda2 = l2cand, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        clusterExport(cl, list("fun1", "S", "n", "l2cand", "myJGLarglist", "criterion", "count.unique", "gamma", "dec"), envir = environment())
+        ICl1 <- parSapply(cl = cl, l1cand, fun1, lambda2 = l2cand, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
         stopCluster(cl)
       } else {
-        ICl1 <- sapply(l1cand, fun, lambda2 = l2cand, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        ICl1 <- sapply(l1cand, fun1, lambda2 = l2cand, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
       }
 
       lambda1 <- l1cand[which.min(ICl1)]
@@ -265,7 +265,7 @@ EstimateGroupNetwork <- function(X,
         l1min <- l1candOp[which.min(ICl1)]
         l1max <- l1candOp[which.min(ICl1) + 2]
         # see if AIC can be further improved in the neighborhood of the chosen value
-        opt <- optimize(f = fun, interval = c(l1min, l1max), lambda2 = l2cand, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        opt <- optimize(f = fun1, interval = c(l1min, l1max), lambda2 = l2cand, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
 
         lambda1 <- ifelse(which.min(c(min(ICl1), opt$objective)) == 1,
                           lambda1,
@@ -278,7 +278,7 @@ EstimateGroupNetwork <- function(X,
       l2cand <- l2sequence(S, n, lambda1, nlambda2, lambda2.min.ratio, logseql2, l2max, ncores, myJGLarglist)
 
       # select the value of l2 with minimal value of an information criterion among the candidates, considering a minimal value of l1
-      fun <- function(lambda2, lambda1, S, n, myJGLarglist, criterion, count.unique, gamma, dec)
+      fun2 <- function(lambda2, lambda1, S, n, myJGLarglist, criterion, count.unique, gamma, dec)
       {
         theta <- myJGL(S = S, n = n, lambda1 = lambda1, lambda2 = lambda2,
                        penalty = myJGLarglist$penalty, weights = myJGLarglist$weights,
@@ -292,11 +292,11 @@ EstimateGroupNetwork <- function(X,
       if(ncores > 1)
       {
         cl <- makeCluster(ncores)
-        clusterExport(cl, list("fun", "S", "n", "l2cand", "lambda1", "myJGLarglist", "criterion", "count.unique", "gamma", "dec"), envir = environment())
-        ICl2 <- parSapply(cl = cl, l2cand, fun, lambda1 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        clusterExport(cl, list("fun2", "S", "n", "l2cand", "lambda1", "myJGLarglist", "criterion", "count.unique", "gamma", "dec"), envir = environment())
+        ICl2 <- parSapply(cl = cl, l2cand, fun2, lambda1 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
         stopCluster(cl)
       } else {
-        ICl2 <- sapply(l2cand, fun, lambda1 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        ICl2 <- sapply(l2cand, fun2, lambda1 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
       }
 
       lambda2 <- l2cand[which.min(ICl2)]
@@ -307,7 +307,7 @@ EstimateGroupNetwork <- function(X,
         l2min <- l2candOp[which.min(ICl2)]
         maxl2 <- l2candOp[which.min(ICl2) + 2]
         # see if AIC can be further improved in the neighborhood of the chosen value
-        opt <- optimize(f = fun, interval = c(l2min, maxl2), lambda1 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        opt <- optimize(f = fun2, interval = c(l2min, maxl2), lambda1 = lambda1, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
 
         lambda2 <- ifelse(which.min(c(min(ICl2), opt$objective)) == 1,
                           lambda2,
@@ -326,7 +326,7 @@ EstimateGroupNetwork <- function(X,
       lambdas[,2] <- l2cand
 
       # among each pair of l1 and l2 values, search for the one that results in the minimum value of the information criterion
-      fun <- function(lambdas, S, n, myJGLarglist, criterion, count.unique, gamma, dec)
+      fun3 <- function(lambdas, S, n, myJGLarglist, criterion, count.unique, gamma, dec)
       {
         theta <- myJGL(S = S, n = n, lambda1 = lambdas[1], lambda2 = lambdas[2],
                        penalty = myJGLarglist$penalty, weights = myJGLarglist$weights,
@@ -340,12 +340,12 @@ EstimateGroupNetwork <- function(X,
       if(ncores > 1)
       {
         cl <- makeCluster(ncores)
-        clusterExport(cl, list("fun", "S", "n", "lambdas", "myJGLarglist", "criterion", "count.unique", "gamma", "dec"), envir = environment())
-        IC <- parApply(cl = cl, lambdas, 1, fun, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        clusterExport(cl, list("fun3", "S", "n", "lambdas", "myJGLarglist", "criterion", "count.unique", "gamma", "dec"), envir = environment())
+        IC <- parApply(cl = cl, lambdas, 1, fun3, S = S, n = n, myJGLarglist = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
         stopCluster(cl)
       } else
       {
-        IC <- apply(lambdas, 1, fun, S = S, n = n, myJGLarglis = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
+        IC <- apply(lambdas, 1, fun3, S = S, n = n, myJGLarglis = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec)
       }
 
       lambda1 <- lambdas[which.min(IC), 1]
@@ -353,7 +353,7 @@ EstimateGroupNetwork <- function(X,
 
       if(optimize)
       {
-        opt <- optim(c(lambda1, lambda2), fun, S = S, n = n, myJGLarglis = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec,
+        opt <- optim(c(lambda1, lambda2), fun3, S = S, n = n, myJGLarglis = myJGLarglist, criterion = criterion, count.unique = count.unique, gamma = gamma, dec = dec,
                      method = optmethod)
 
         if(opt$value < min(IC))
@@ -518,7 +518,7 @@ l2sequence <- function(S, n, l1cand, nlambda2, lambda2.min.ratio, logseql2, l2ma
   # For each candidate l1, identify the lowest value of lambda2 that makes all the elements of the precision matix
   #  equal among different classes (max difference allowed = tol), using the stats::optimize function
 
-  fun <- function(lambda2, lambda1, S, n, myJGLarglist)
+  fun4 <- function(lambda2, lambda1, S, n, myJGLarglist)
   {
     #cat(paste(lambda1, lambda2, "\n"))
     tol <- myJGLarglist$tol
@@ -544,11 +544,11 @@ l2sequence <- function(S, n, l1cand, nlambda2, lambda2.min.ratio, logseql2, l2ma
   if(ncores > 1 & nlambda1 > 1)
   {
     cl <- makeCluster(ncores)
-    clusterExport(cl, list("fun", "S", "n", "l2max", "l1cand", "myJGLarglist"), envir = environment())
-    l2_theormax <- parSapply(cl = cl, seq(nlambda1), function(i) optimize(f = fun, S = S, n = n, lambda1 = l1cand[i], myJGLarglist = myJGLarglist, interval = c(0, l2max))$minimum)
+    clusterExport(cl, list("fun4", "S", "n", "l2max", "l1cand", "myJGLarglist"), envir = environment())
+    l2_theormax <- parSapply(cl = cl, seq(nlambda1), function(i) optimize(f = fun4, S = S, n = n, lambda1 = l1cand[i], myJGLarglist = myJGLarglist, interval = c(0, l2max))$minimum)
     stopCluster(cl)
   } else {
-    l2_theormax <-  sapply(seq(nlambda1), function(i) optimize(f = fun, lambda1 = l1cand[i], S= S, n = n, myJGLarglist = myJGLarglist, interval = c(0, l2max))$minimum)
+    l2_theormax <-  sapply(seq(nlambda1), function(i) optimize(f = fun4, lambda1 = l1cand[i], S= S, n = n, myJGLarglist = myJGLarglist, interval = c(0, l2max))$minimum)
   }
 
   l2min <- l2_theormax * lambda2.min.ratio
@@ -566,10 +566,10 @@ l2sequence <- function(S, n, l1cand, nlambda2, lambda2.min.ratio, logseql2, l2ma
 }
 
 # this way of computing the covariance matrix was taken from function JGL::JGL
-covNoBessel <- function(x)
+covNoBessel <- function(x, ...)
 {
   n <- nrow(x)
-  (cov(x)*(n-1))/n
+  (cov(x, ...)*(n-1))/n
 }
 
 

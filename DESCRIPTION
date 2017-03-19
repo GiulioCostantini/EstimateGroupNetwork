@@ -4,7 +4,7 @@ Title: Perform The Joint Graphical Lasso and Selects Tuning Parameters
 Version: 0.1.0
 Author: Giulio Costantini, Sacha Epskamp
 Maintainer: Giulio Costantini <costantinigiulio@gmail.com>
-Description: Select tuning parameters for the Joint Grapical Lasso according to information criteria or crossvalidation
+Description: Simultaneously estimates networks (gaussian graphical models) from data comimng from different groups or classes via Joint Graphical Lasso; tuning parameters are selected via information criteria or crossvalidation
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
