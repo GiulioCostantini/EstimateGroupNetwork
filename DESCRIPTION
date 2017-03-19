@@ -1,7 +1,7 @@
 Package: EstimateGroupNetwork
 Type: Package
 Title: Perform The Joint Graphical Lasso and Selects Tuning Parameters
-Version: 0.1.0
+Version: 0.1.1
 Author: Giulio Costantini, Sacha Epskamp
 Maintainer: Giulio Costantini <costantinigiulio@gmail.com>
 Description: Simultaneously estimates networks (gaussian graphical models) from data comimng from different groups or classes via Joint Graphical Lasso; tuning parameters are selected via information criteria or crossvalidation
