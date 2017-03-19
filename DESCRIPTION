@@ -4,7 +4,7 @@ Title: Perform The Joint Graphical Lasso and Selects Tuning Parameters
 Version: 0.1.1
 Author: Giulio Costantini, Sacha Epskamp
 Maintainer: Giulio Costantini <costantinigiulio@gmail.com>
-Description: Simultaneously estimates networks (gaussian graphical models) from data comimng from different groups or classes via Joint Graphical Lasso; tuning parameters are selected via information criteria or crossvalidation
+Description: Can be used to simultaneously estimate networks (gaussian graphical models) in data from different groups or classes via Joint Graphical Lasso. Tuning parameters are selected via information criteria (AIC / BIC / eBIC) or crossvalidation.
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
