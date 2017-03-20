@@ -157,8 +157,19 @@ Giulio Costantini, Sacha Epskamp
 \pkg{JGL}, \pkg{qgraph}, \pkg{parcor}, \link{covNoBessel}
 }
 \examples{
-library("qgraph")
 library("mvtnorm")
+# Toy example, two identical networks with two nodes.
+# This example is only meant to test the package. The number
+# of candidate lambda1 and lambda2 values (nlambda1 and nlambda2) was
+# reduced to 2 to speed up computations for CRAN checking.
+Sigma <- list()
+Sigma[[1]] <- Sigma[[2]] <- matrix(c(1, .5,
+                                     .5, 1), nrow = 2)
+recovered <- EstimateGroupNetwork(X = Sigma, n = c(100, 100),
+                                  nlambda1 = 2, nlambda2 = 2, optimize = FALSE)
+
+\dontrun{
+library("qgraph")
 library("parallel")
 library("psych")
 
@@ -187,7 +198,8 @@ layout(t(1:2))
 qgraph(Res$males, layout = Layout, title = "Males (JGL)")
 qgraph(Res$females, layout = Layout, title = "Females (JGL)")
 
-\dontrun{
+
+
 # Example with simluated data
 # generate three network structures, two are identical and one is different
 nets <- list()
