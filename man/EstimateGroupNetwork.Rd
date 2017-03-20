@@ -157,7 +157,6 @@ Giulio Costantini, Sacha Epskamp
 \pkg{JGL}, \pkg{qgraph}, \pkg{parcor}, \link{covNoBessel}
 }
 \examples{
-library("mvtnorm")
 # Toy example, two identical networks with two nodes.
 # This example is only meant to test the package. The number
 # of candidate lambda1 and lambda2 values (nlambda1 and nlambda2) was
@@ -172,6 +171,7 @@ recovered <- EstimateGroupNetwork(X = Sigma, n = c(100, 100),
 library("qgraph")
 library("parallel")
 library("psych")
+library("mvtnorm")
 
 ncores <- 1
 # uncomment for parallel processing
