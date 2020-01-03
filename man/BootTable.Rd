@@ -14,7 +14,7 @@ BootTable(BootOut)
 The output from \code{GroupNetworkBoot}
 }
 }
-}
+
 \details{
 Summary table of the output of \code{GroupNetworkBoot}
 }
