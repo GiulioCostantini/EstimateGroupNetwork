@@ -1,5 +1,5 @@
 #exportPattern("^[[:alpha:]]+")
-export(EstimateGroupNetwork, covNoBessel)
+export(EstimateGroupNetwork, covNoBessel, GroupNetworkBoot, GroupBootPlot, BootTable)
 importFrom("parallel", "makeCluster", "clusterExport", "parApply", "parSapply", "parLapply", "stopCluster")
 importFrom("igraph", "graph.adjacency", "clusters")
 importFrom("qgraph", "wi2net")

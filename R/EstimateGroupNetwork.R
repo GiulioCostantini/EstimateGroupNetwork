@@ -122,7 +122,7 @@ EstimateGroupNetwork <- function(X,
                       "rho" = rho,
                       "truncate" = truncate)
 
-  # assign names to variables if none exist
+  # assign names to variables if not specified
   if(missing(labels))
   {
     if(!is.null(colnames(S[[1]])))

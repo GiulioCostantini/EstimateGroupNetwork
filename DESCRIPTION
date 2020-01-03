@@ -1,12 +1,12 @@
 Package: EstimateGroupNetwork
 Type: Package
 Title: Perform the Joint Graphical Lasso and Selects Tuning Parameters
-Version: 0.1.3
-Author: Giulio Costantini, Sacha Epskamp
+Version: 0.2.0
+Author: Giulio Costantini, Nils Kappelmann, Sacha Epskamp
 Maintainer: Giulio Costantini <giulio.costantini@unimib.it>
 Description: Can be used to simultaneously estimate networks (Gaussian Graphical Models) in data from different groups or classes via Joint Graphical Lasso. Tuning parameters are selected via information criteria (AIC / BIC / eBIC) or crossvalidation.
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
-Imports: parallel, igraph, qgraph
+Imports: parallel, igraph, qgraph, tidyverse
 Suggests: mvtnorm, JGL, psych
