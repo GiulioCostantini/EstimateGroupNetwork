@@ -1,22 +1,22 @@
 \name{BootTable}
 \alias{BootTable}
 \title{
-Create a table of bootstrapped confidence intervals for all edges of a Joint Graphical Lasso model.}
+Summary table for a bootstrapped Joint Graphical Lasso model 
+}
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Create a table of bootstrapped means and confidence intervals for all edges of a bootstrapped confidence interval obtained through \link{GroupNetworkBoot}.
 }
 \usage{
 BootTable(BootOut)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{BootOut}{
-The output from \code{GroupNetworkBoot}
+The output from \link{GroupNetworkBoot}
 }
 }
 
 \details{
-Summary table of the output of \code{GroupNetworkBoot}
+Summary table of the output of \link{GroupNetworkBoot}
 }
 \value{
 \item{Var1}{Nodes included in each edge}
@@ -39,56 +39,8 @@ Nils Kappelmann <n.kappelmann@gmail.com>, Giulio Costantini
 }
 
 \seealso{
-\pkg{JGL}, \pkg{qgraph}, \pkg{parcor}, \link{covNoBessel}
+\pkg{JGL}, \pkg{qgraph}, \pkg{parcor}
 }
-\examples{
 
-\dontrun{
-## Load packages:
-library("qgraph")
-library("parallel")
-library("psych")
-library("mvtnorm")
-library("tidyverse")
-library("EstimateGroupNetwork")
-
-# In this example, the BFI network of males and females are compared for the subset of Agreeableness items
-# Load BFI data
-data(bfi)
-
-## The bfi data is subset to Agreeableness items only for the first 500 individuals to decrease computational time
-bfi <- bfi[, c(paste("A", 1:5, sep = ""), "gender")]
-
-# remove observations with missing values on items or gender
-bfi <- na.omit(bfi)
-
-# Create list split by gender
-bfi_list <- list(males = bfi[bfi$gender == 1, 1:5],
-                 females = bfi[bfi$gender == 2, 1:5])
-
-# Estimate JGL:
-bfi_net <- EstimateGroupNetwork(bfi_list, inputType = "list.of.dataframes", simplifyOutput = FALSE)
-
-# Bootstrap network 10 times (this will take a few minutes)
-boot_bfi_net <- GroupNetworkBoot(data_list = bfi_list, groupNetwork = bfi_net, 
-                                 nboots = 10, seed = 1234, ncores = 1)
-
-# use BootTable to obtain a table with information for each boostrapped edge
-BootTable(boot_bfi_net)
-
-## Use GroupBootPlot to obtain plots as a list with each group plot as one element
-GroupBootPlot(boot_bfi_net) 
-
-## Get plot for a subset of edges (here: all edges including A1). Also check Groupnames
-GroupBootPlot(boot_bfi_net, edges.x = "A1", edges.y = c("A2", "A3", "A4", "A5"), 
-              GroupNames = c("Females", "Males"), GroupNamesCheck = TRUE, legend.position = "top")
-
-
-
-
-}
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{graphs}% use one of RShowDoc("KEYWORDS")
+\keyword{graphs}
 \keyword{multivariate}

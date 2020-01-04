@@ -1,5 +1,5 @@
-\name{GroupNetworkBootstrap}
-\alias{GroupNetworkBootstrap}
+\name{GroupNetworkBoot}
+\alias{GroupNetworkBoot}
 \title{
 Compute bootstrap networks for a Joint Graphical Lasso model on data collected on observations from different groups.
 }
@@ -8,10 +8,9 @@ This bootstrapping function resamples from intial dataframes to compute bootstra
 }
 \usage{
                      
-GroupNetworkBoot <- function(data_list, groupNetwork, nboots = 100, bootSeed = 1, ...)                  
+GroupNetworkBoot(data_list, groupNetwork, nboots = 100, bootSeed, ...)                  
                      
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
  \item{data_list}{A list of dataframes, one by group. Each dataframe must be structured in the same way (the same variables for each group). This needs to be the same input as was used for the original Joint Graphical Lasso network estimated with \code{EstimateGroupNetwork}.
 }
@@ -22,7 +21,7 @@ The to-be-bootstrapped network estimated with the \code{EstimateGroupNetwork} fu
 The number of bootstraps to-be-conducted.
 }
   \item{bootSeed}{
-A random seed for ensuring replicability of the boostrapping procedure. Exact replicability of the results is ensured only if also the \code{seed} parameter is passed to \code{EstimateGroupNetwork} as well, through the \code{...} argument.
+An optional random seed for ensuring replicability of the results.
 }
   \item{...}{
   All further arguments need to be specified as done for the initial computation of the \code{EstimateGroupNetwork} function. Here all arguments apply and have the default values of function \code{EstimateGroupNetwork}, with the exceptions being the arguments \code{inputType = "list.of.dataframes"}, \code{simplifyOutput = FALSE}, and  \code{labels}, as node labels are taken directly from the original network. These arguments are set by default.
@@ -82,6 +81,8 @@ bfi_net <- EstimateGroupNetwork(bfi_list, inputType = "list.of.dataframes", simp
 boot_bfi_net <- GroupNetworkBoot(data_list = bfi_list, groupNetwork = bfi_net, 
                                  nboots = 10, bootSeed = 1234, ncores = 1)
 
+# use BootTable to obtain a table with information for each boostrapped edge
+BootTable(boot_bfi_net)
 
 ## Use GroupBootPlot to obtain plots as a list with each group plot as one element
 GroupBootPlot(boot_bfi_net) 
@@ -92,7 +93,5 @@ GroupBootPlot(boot_bfi_net, edges.x = "A1", edges.y = c("A2", "A3", "A4", "A5"),
 
 }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{graphs}% use one of RShowDoc("KEYWORDS")
+\keyword{graphs}
 \keyword{multivariate}

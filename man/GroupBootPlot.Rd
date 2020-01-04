@@ -4,27 +4,15 @@
 Create a plot of bootstrapped confidence intervals for all edges of a Joint Graphical Lasso model.
 }
 \description{
-This function plots output from bootstrapped networks computed with \code{GroupNetworkBoot}.
+This function plots output from bootstrapped networks computed with \link{GroupNetworkBoot}.
 }
 \usage{
-GroupBootPlot <- function(
-      BootOut, 
-      GroupNames, 
-      edges.x, 
-      edges.y, 
-      labels = TRUE, 
-      transparency = 0.15, 
-      point.size = 1.5, 
-      line.size = 1, 
-      legend.position = "none",
-      GroupNamesCheck = FALSE
-)          
-                     
-                     
+GroupBootPlot(BootOut, GroupNames, edges.x, edges.y, 
+labels = TRUE, transparency = 0.15, point.size = 1.5, line.size = 1, 
+legend.position = "none", GroupNamesCheck = FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{BootOut}{The output from \code{GroupNetworkBoot}.
+  \item{BootOut}{The output from \link{GroupNetworkBoot}.
 }
   \item{GroupNames}{
 A vector of optional group names that will be printed as facet labels in plot. By default, names of the networks are taken. If indicated, GroupNames should match the alphabetical order of names of networks. If unsure, check match of names by setting \code{GroupNamesCheck = TRUE}.
@@ -69,56 +57,7 @@ Danaher, P., Wang, P., and Witten, D. M. (2014). The joint graphical lasso for i
 Nils Kappelmann <n.kappelmann@gmail.com>, Giulio Costantini
 }
 \seealso{
-\pkg{JGL}, \pkg{qgraph}, \pkg{parcor}, \link{covNoBessel}
+\pkg{JGL}, \pkg{qgraph}, \pkg{parcor}
 }
-\examples{
-
-\dontrun{
-## Load packages:
-library("qgraph")
-library("parallel")
-library("psych")
-library("mvtnorm")
-library("tidyverse")
-library("EstimateGroupNetwork")
-
-# In this example, the BFI network of males and females are compared for the subset of Agreeableness items
-# Load BFI data
-data(bfi)
-
-## The bfi data is subset to Agreeableness items only for the first 500 individuals to decrease computational time
-bfi <- bfi[, c(paste("A", 1:5, sep = ""), "gender")]
-
-# remove observations with missing values on items or gender
-bfi <- na.omit(bfi)
-
-# Create list split by gender
-bfi_list <- list(males = bfi[bfi$gender == 1, 1:5],
-                 females = bfi[bfi$gender == 2, 1:5])
-
-# Estimate JGL:
-bfi_net <- EstimateGroupNetwork(bfi_list, inputType = "list.of.dataframes", simplifyOutput = FALSE)
-
-# Bootstrap network 10 times (this will take a few minutes)
-boot_bfi_net <- GroupNetworkBoot(data_list = bfi_list, groupNetwork = bfi_net, 
-                                 nboots = 10, seed = 1234, ncores = 1)
-
-# use BootTable to obtain a table with information for each boostrapped edge
-BootTable(boot_bfi_net)
-
-## Use GroupBootPlot to obtain plots as a list with each group plot as one element
-GroupBootPlot(boot_bfi_net) 
-
-## Get plot for a subset of edges (here: all edges including A1). Also check Groupnames
-GroupBootPlot(boot_bfi_net, edges.x = "A1", edges.y = c("A2", "A3", "A4", "A5"), 
-              GroupNames = c("Females", "Males"), GroupNamesCheck = TRUE, legend.position = "top")
-
-
-
-
-}
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{graphs}% use one of RShowDoc("KEYWORDS")
+\keyword{graphs}
 \keyword{multivariate}
