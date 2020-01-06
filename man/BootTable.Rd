@@ -4,7 +4,7 @@
 Summary table for a bootstrapped Joint Graphical Lasso model 
 }
 \description{
-Create a table of bootstrapped means and confidence intervals for all edges of a bootstrapped confidence interval obtained through \link{GroupNetworkBoot}.
+Create a table of bootstrapped means and confidence intervals for all edges of a bootstrapped Joint Graphical Lasso model obtained through \link{GroupNetworkBoot}.
 }
 \usage{
 BootTable(BootOut)
@@ -25,8 +25,10 @@ Summary table of the output of \link{GroupNetworkBoot}
 \item{sample}{sample value of each edge}
 \item{boot.mean}{mean of boostrapped values of each edge}
 \item{ci.lb}{lower bound of the .95 confidence interval}
-\item{ci.up}{upper bound of the .95 confidence interval}
-\item{boot.zero}{proportion of times an edge was estimated as equal to zero}
+\item{ci.ub}{upper bound of the .95 confidence interval}
+\item{boot.zero}{
+proportion of bootstraps, in which an edge was estimated as equal to zero (i.e., 0= edge not estimated as zero throughout bootstraps; 1= edge estimated as zero in all bootstraps)
+}
 \item{g}{group in which the edge was estimated}
 
 }

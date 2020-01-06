@@ -16,6 +16,8 @@ GroupNetworkBoot <- function(
    
    #----------------Random seed for replicability --------
    if(!missing(bootSeed)) set.seed(bootSeed)
+   
+   
    # ---------------Check simplifyOutput argument--------
    
    if(is.null(groupNetwork$network[[1]])) {
@@ -34,15 +36,9 @@ GroupNetworkBoot <- function(
    
    tracker = round(seq(from = 0, to = 100, length.out = nboots), 1)
    
-   # seeds = bootSeed:(bootSeed + nboots*G) # Set seed vector
-   # seed_pos = 1 # Set seed position tracker to 1
    
    start_time = Sys.time()
    
-   # network_args = as.data.frame(groupNetwork$miscellaneous)
-   # network_args$arg = row.names(network_args)
-   # colnames(network_args)[1] = "setting"
-   # network_args = mutate_all(network_args, as.character)
    
    # --------------- Check data -------------------------
    if(any(sapply(data_list, ncol) != nvar))
@@ -67,10 +63,6 @@ GroupNetworkBoot <- function(
       boot_dat = list()
       
       for(j in 1:G)     {
-         
-         ## Set seed
-         # set.seed(seeds[seed_pos])
-         # seed_pos = seed_pos + 1
          
          ## Save group
          boot_dat[[j]] <- data_list[[j]][sample(1:Gn$n[j], size = Gn$n[j], replace = TRUE),]

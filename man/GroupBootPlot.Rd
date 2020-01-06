@@ -15,7 +15,7 @@ legend.position = "none", GroupNamesCheck = FALSE)
   \item{BootOut}{The output from \link{GroupNetworkBoot}.
 }
   \item{GroupNames}{
-A vector of optional group names that will be printed as facet labels in plot. By default, names of the networks are taken. If indicated, GroupNames should match the alphabetical order of names of networks. If unsure, check match of names by setting \code{GroupNamesCheck = TRUE}.
+A vector of optional group names that will be printed as facet labels in plot. By default, names of the networks are taken. If specified, GroupNames should match the alphabetical order of names of network groups. If unsure, you can check the matching of names by setting \code{GroupNamesCheck = TRUE}.
 }
 \item{edges.x}{
   If only a subset of edge combinations is of interest for the plot, this subset can be specified by setting \code{edges.x} and \code{edges.y}. Specifically, node names can be specified as vectors for \code{edges.x} and \code{edges.y} and all unique combinations of \code{edges.x} and \code{edges.y} will be plotted. For example, \code{edges.x = c("a", "b")} and \code{edges.y = "c"} will plot edges a-c and b-c but not a-b.
@@ -27,7 +27,7 @@ A vector of optional group names that will be printed as facet labels in plot. B
   Logical, should edge labels be included in plots. Default is \code{labels = TRUE}.
 }
 \item{transparency}{
-  Set alpha channel (transparency) for confidence interval ribbon in plot.
+  Set \pkg{ggplot2} alpha channel (transparency) for confidence interval ribbon in plot.
 }
 \item{point.size}{
   Set point size. 
@@ -39,15 +39,16 @@ A vector of optional group names that will be printed as facet labels in plot. B
   Define legend position to indicate colour for sample and bootstrap means. See ?theme in ggplot2.
 }
 \item{GroupNamesCheck}{
-  Option to print match of indicated GroupNames to console. Only prints if GroupNames is specified. See \code{GroupNames = TRUE} as well.
+  Option to print match of indicated GroupNames to console. Only prints if GroupNames is specified. See \code{GroupNames} for details.
 }
 }
 
 \details{
 The code for the Joint Graphical Lasso procedure was adapted from the R package \pkg{JGL}. Some of the code for the cross-validation procedure was adapted from package \pkg{parcor}. Some of the code was inspired by package \pkg{qgraph}.
+GroupBootPlot automatically calls \link{BootTable} to format \link{GroupNetworkBoot} output, so see \link{BootTable} for completely independent plotting. 
 }
 \value{
-The output of GroupBootPlot returns a plot based on \pkg{ggplot2} with containing the bootstrapped confidence intervals of edges across groups.
+The output of GroupBootPlot returns a plot based on \pkg{ggplot2} with the bootstrapped confidence intervals of edges across groups.
 }
 
 \references{
