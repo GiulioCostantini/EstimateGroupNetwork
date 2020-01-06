@@ -53,11 +53,7 @@ Nils Kappelmann <n.kappelmann@gmail.com>, Giulio Costantini
 \dontrun{
 
 ## Load packages:
-library("qgraph")
-library("parallel")
 library("psych")
-library("mvtnorm")
-library("tidyverse")
 library("EstimateGroupNetwork")
 
 # In this example, the BFI network of males and females are compared for the subset of Agreeableness items
