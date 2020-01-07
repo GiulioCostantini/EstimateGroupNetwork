@@ -56,11 +56,13 @@ Nils Kappelmann <n.kappelmann@gmail.com>, Giulio Costantini
 library("psych")
 library("EstimateGroupNetwork")
 
-# In this example, the BFI network of males and females are compared for the subset of Agreeableness items
+# In this example, the BFI network of males and females are compared for the subset of
+# Agreeableness items
 # Load BFI data
 data(bfi)
 
-## The bfi data is subset to Agreeableness items only for the first 500 individuals to decrease computational time
+## The bfi data is subset to Agreeableness items only for the first 500 individuals to decrease
+# computational time
 bfi <- bfi[, c(paste("A", 1:5, sep = ""), "gender")]
 
 # remove observations with missing values on items or gender

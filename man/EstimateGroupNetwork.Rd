@@ -157,6 +157,7 @@ Giulio Costantini, Sacha Epskamp
 \pkg{JGL}, \pkg{qgraph}, \pkg{parcor}
 }
 \examples{
+\dontrun{
 # Toy example, two identical networks with two nodes.
 # This example is only meant to test the package. The number
 # of candidate lambda1 and lambda2 values (nlambda1 and nlambda2) was
@@ -167,7 +168,7 @@ Sigma[[1]] <- Sigma[[2]] <- matrix(c(1, .5,
 recovered <- EstimateGroupNetwork(X = Sigma, n = c(100, 100),
                                   nlambda1 = 2, nlambda2 = 2, optimize = FALSE)
 
-\dontrun{
+
 library("qgraph")
 library("parallel")
 library("psych")
