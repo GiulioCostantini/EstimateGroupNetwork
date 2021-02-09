@@ -35,7 +35,7 @@ A vector of optional group names that will be printed as facet labels in plot. B
 \item{line.size}{
   Set line size. 
 }
-\item{scale}{
+\item{scales}{
   Set \pkg{ggplot2} facet scales. Default is \code{scale = "fixed"}. See ?facet_grid in ggplot2 for details.
 }
 \item{legend.position}{
