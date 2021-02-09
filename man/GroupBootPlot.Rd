@@ -8,7 +8,7 @@ This function plots output from bootstrapped networks computed with \link{GroupN
 }
 \usage{
 GroupBootPlot(BootOut, GroupNames, edges.x, edges.y, 
-labels = TRUE, transparency = 0.15, point.size = 1.5, line.size = 1, 
+labels = TRUE, transparency = 0.15, point.size = 1.5, line.size = 1, scales = "fixed", 
 legend.position = "none", GroupNamesCheck = FALSE)
 }
 \arguments{
